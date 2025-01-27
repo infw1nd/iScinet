@@ -3,32 +3,37 @@
     "username": "paingoat",
     "tasks": [
       {
-        "name": "New Task",
+        "name": "a1",
+        "checked": false,
+        "weight": "102"
+      },
+      {
+        "name": "1",
         "checked": false,
         "weight": "10"
       },
       {
-        "name": "New Task",
+        "name": "2",
         "checked": false,
-        "weight": "10"
+        "weight": "99"
       },
       {
-        "name": "New Task",
-        "checked": false,
-        "weight": "10"
-      },
-      {
-        "name": "Task 3",
+        "name": "3",
         "checked": true,
         "weight": "10"
       },
       {
-        "name": "New Task",
+        "name": "4",
         "checked": false,
         "weight": "10"
       },
       {
-        "name": "New Task",
+        "name": "helu",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "6",
         "checked": false,
         "weight": "10"
       },
@@ -39,10 +44,10 @@
       }
     ],
     "score": 10,
-    "target": 70,
+    "target": 261,
     "passwordHash": "$2b$10$TDIjTKg/R87UBFXpBBe65OMr2gjYZWiZxD0zfoqP.0ux/WaSy2IaK",
     "theme": "dark",
-    "mode": "priority"
+    "mode": "free"
   },
   {
     "username": "123",

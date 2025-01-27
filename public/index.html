@@ -733,11 +733,16 @@
         updateStats();
         saveUserData(); 
       });
+
       taskNameInput.addEventListener('input', () => {
         taskNameInput.title = taskNameInput.value;
+      });
+
+      taskNameInput.addEventListener('blur', () => {
         updateStats();
         saveUserData();
       });
+
       weightInput.addEventListener('change', () => {
         if(!weightInput.value.trim()) {
           weightInput.value='0';
