@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>iScinet</title>
+
+  <!-- Favicon (tùy chọn) -->
+  <link rel="icon" type="image/png" href="iscinet_favicon.png" />
+
+  <!-- Google Font Nunito (tùy chọn) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ============ GIỮ NGUYÊN CSS BẠN ĐÃ CÓ ============ */
+    * {
+      box-sizing: border-box;
+      margin: 0; 
+      padding: 0;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background: #fff;
+      color: #000;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    body.dark-theme {
+      background: #333;
+      color: #eee;
+    }
+    body.dark-theme .score-label {
+      color: #eee; 
+    }
+    body.dark-theme .task-name,
+    body.dark-theme .task-weight {
+      color: #eee;
+    }
+    body.dark-theme .todo-container {
+      background: #444;
+      border-color: #666;
+    }
+    body.dark-theme .task-row {
+      background: #555;
+      border-color: #777;
+    }
+    body.dark-theme .progress-bar-bg {
+      background: #777;
+    }
+    body.dark-theme #saveButton,
+    body.dark-theme #loadButton,
+    body.dark-theme #resetButton,
+    body.dark-theme .add-task-btn {
+      background: #000;
+      color: #fff;
+      border: 1px solid #ccc;
+    }
+    body.dark-theme .settings-panel {
+      background: #444;
+      color: #fff;
+      border-color: #777;
+    }
+    body.dark-theme .settings-btn {
+      background: #000;
+      color: #fff;
+    }
+
+    .settings-panel .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+    .settings-panel .toggle-item span {
+      flex: 1;
+      text-align: center;
+    }
+    .iscinet-flag {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 98px;
+      height: 42px;
+      background-color: #0c8599;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      z-index: 999;
+      border-radius: 0 1px 1px 0;
+      clip-path: polygon(
+        0% 0%,
+        100% 0%,
+        100% 40%,
+        90% 40%,
+        90% 60%,
+        100% 60%,
+        100% 100%,
+        0% 100%
+      );
+    }
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 998;
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 32px;
+      background: inherit;
+    }
+    #saveButton, #loadButton, #resetButton {
+      padding: 8px 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #f0f0f0;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.2s;
+      color: #000;
+    }
+    #saveButton:hover, #loadButton:hover, #resetButton:hover {
+      background: #e0e0e0;
+    }
+    .score-target {
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: auto;
+    }
+    .score-label {
+      font-weight: bold;
+      color: #000;
+    }
+    .target-label {
+      font-weight: bold;
+      color: red;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+    .todo-container {
+      width: 400px;
+      max-width: 90%;
+      margin: 16px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 16px;
+      background: #fff;
+      transition: background 0.2s;
+    }
+    .task-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px;
+      position: relative; 
+      cursor: pointer;
+      background: #fff;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .task-row:hover,
+    .task-row:focus-within {
+      box-shadow: 0 0 3px 2px rgba(0,0,0,0.2);
+    }
+    body.dark-theme .task-row:hover,
+    body.dark-theme .task-row:focus-within {
+      box-shadow: 0 0 3px 2px rgba(255,255,255,0.4);
+    }
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 70%;
+    }
+    .task-left input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+    .task-name {
+      border: none;
+      background-color: transparent;
+      outline: none;
+      font-size: 16px;
+      cursor: text;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .task-name.completed {
+      text-decoration: line-through;
+    }
+    .task-weight {
+      cursor: pointer;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      width: 40px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .add-task-btn {
+      margin-top: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      border-radius: 4px;
+      transition: background 0.2s;
+      color: #000;
+    }
+    .add-task-btn:hover {
+      background: #e0e0e0;
+    }
+    .progress-container {
+      width: 400px;
+      max-width: 90%;
+      margin: 16px auto;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 16px;
+      background: #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #4caf50;
+      width: 0%;
+      transition: width 0.3s ease-in-out;
+    }
+    .progress-text {
+      text-align: center;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    #congratulationMsg {
+      position: fixed;
+      top: 50%;
+      left: 200px;
+      transform: translateY(-50%);
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff5722;
+      display: none;
+      z-index: 1000;
+    }
+    @keyframes showAndHide {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      15% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      85% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+    .score-float {
+      position: absolute;
+      color: green;
+      font-weight: bold;
+      animation: floatScore 1s ease-out forwards;
+    }
+    @keyframes floatScore {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+    }
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      background: red;
+      opacity: 0.8;
+      z-index: 9999;
+      pointer-events: none; 
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% {
+        transform: translateX(var(--startX)) translateY(-10%) rotate(0deg);
+      }
+      100% {
+        transform: translateX(var(--endX)) translateY(110vh) rotate(720deg);
+      }
+    }
+    .settings-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 24px;
+      border: none;
+      background: #f0f0f0;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 999;
+    }
+    .settings-btn:hover {
+      background: #e0e0e0;
+    }
+    .settings-panel {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 220px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px;
+      display: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 999;
+      color: #000;
+    }
+    .settings-panel h3 {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .toggle-item {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .toggle-item .switch {
+      position: relative;
+    }
+    .toggle-item .switch:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -30px;
+      left: 0;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute; 
+      cursor: pointer;
+      top: 0; 
+      left: 0; 
+      right: 0;
+      bottom: 0; 
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 25px;
+    }
+    .slider:before {
+      position: absolute; 
+      content: "";
+      height: 19px;
+      width: 19px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    .context-menu {
+      position: absolute;
+      width: 80px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .context-menu__item {
+      padding: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #000;
+    }
+    .context-menu__item:hover {
+      background: #eee;
+    }
+    .context-menu__item.delete-item {
+      color: red;
+      font-weight: bold;
+    }
+
+
+  </style>
+</head>
+<body>
+  <!-- Lá cờ -->
+  <div class="iscinet-flag">iScinet</div>
+
+  <!-- Header -->
+  <div class="header">
+    <button id="saveButton">Save</button>
+    <button id="loadButton">Load</button>
+    <button id="resetButton">Reset</button>
+    <div class="score-target">
+      <span class="score-label">Score:</span> 
+      <span id="scoreValue">0</span>
+      <span style="margin-left: 10px;">
+        | <span class="target-label">Target:</span> 
+        <span id="targetValue" class="target-label">0</span>
+      </span>
+    </div>
+  </div>
+
+  <h1>To do list</h1>
+
+  <!-- Danh sách task mẫu ban đầu (sẽ được xóa/bổ sung khi loadUserData) -->
+  <div class="todo-container" id="todoContainer">
+    <div class="task-row">
+      <div class="task-left">
+        <input type="checkbox" class="task-checkbox" />
+        <input type="text" class="task-name" value="Task 1" title="Task 1"/>
+      </div>
+      <input type="text" class="task-weight" value="10" />
+    </div>
+    <div class="task-row">
+      <div class="task-left">
+        <input type="checkbox" class="task-checkbox" />
+        <input type="text" class="task-name" value="Task 2" title="Task 2"/>
+      </div>
+      <input type="text" class="task-weight" value="10" />
+    </div>
+    <div class="task-row">
+      <div class="task-left">
+        <input type="checkbox" class="task-checkbox" />
+        <input type="text" class="task-name" value="Task 3" title="Task 3"/>
+      </div>
+      <input type="text" class="task-weight" value="10" />
+    </div>
+    <button class="add-task-btn" id="addTaskBtn">+ Create task</button>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText">0%</div>
+  </div>
+
+  <div id="congratulationMsg">Congratulation!</div>
+
+  <!-- Nút cài đặt -->
+  <button class="settings-btn" id="settingsBtn">⚙️</button>
+
+  <!-- Panel cài đặt -->
+  <div class="settings-panel" id="settingsPanel">
+    <h3>Settings</h3>
+    <!-- Toggle 1: Free <-> Priority -->
+    <div class="toggle-item">
+      <span>Free</span>
+      <label class="switch" data-tooltip="Mode">
+        <input type="checkbox" id="modeSwitch"/>
+        <span class="slider"></span>
+      </label>
+      <span>Priority</span>
+    </div>
+
+    <!-- Toggle 2: Light <-> Dark -->
+    <div class="toggle-item">
+      <span>Light</span>
+      <label class="switch" data-tooltip="Theme">
+        <input type="checkbox" id="themeSwitch"/>
+        <span class="slider"></span>
+      </label>
+      <span>Dark</span>
+    </div>
+  </div>
+
+  <!-- Ẩn input để load file .txt -->
+  <input type="file" id="fileInput" accept=".txt" style="display: none;" />
+
+  <!-- Context menu (chuột phải) -->
+  <div class="context-menu" id="contextMenu">
+    <div class="context-menu__item" data-action="up">Up</div>
+    <div class="context-menu__item" data-action="down">Down</div>
+    <div class="context-menu__item delete-item" data-action="delete">Delete</div>
+  </div>
+
+  <!-- ========== SCRIPT CHÍNH ========== -->
+  <script>
+    /** ========== Biến DOM ========== **/
+    const todoContainer = document.getElementById('todoContainer');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const scoreValue = document.getElementById('scoreValue');
+    const targetValue = document.getElementById('targetValue');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const congratulationMsg = document.getElementById('congratulationMsg');
+
+    const saveButton = document.getElementById('saveButton');
+    const loadButton = document.getElementById('loadButton');
+    const fileInput = document.getElementById('fileInput');
+
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+
+    const modeSwitch = document.getElementById('modeSwitch');   // switch -> priority
+    const themeSwitch = document.getElementById('themeSwitch'); // switch -> dark
+
+    const contextMenu = document.getElementById('contextMenu');
+    const contextUp = contextMenu.querySelector('[data-action="up"]');
+    const contextDown = contextMenu.querySelector('[data-action="down"]');
+
+    let currentMode = 'free';   // modeSwitch.checked=false => free
+    let currentTheme = 'light'; // themeSwitch.checked=false => light
+    let previousScore = 0;
+    let currentTaskRow = null;
+
+    /** 
+     * ====== HÀM AUTO-SAVE NGAY KHI CÓ THAY ĐỔI ======
+     * Gọi fetch /update-data => lưu vào users.json
+     */
+    function saveUserData() {
+      console.log("Auto-saving user data...");
+
+      const tasks = document.querySelectorAll('.task-row');
+      const userTasks = [];
+      tasks.forEach(task => {
+        userTasks.push({
+          name: task.querySelector('.task-name').value,
+          checked: task.querySelector('.task-checkbox').checked,
+          weight: task.querySelector('.task-weight').value
+        });
+      });
+
+      const userSettings = {
+        tasks: userTasks,
+        theme: document.body.classList.contains('dark-theme') ? 'dark' : 'light',
+        mode: modeSwitch.checked ? 'priority' : 'free',
+        score: parseInt(scoreValue.innerText) || 0,
+        target: parseInt(targetValue.innerText) || 100
+      };
+
+      fetch('/update-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'user-credentials': localStorage.getItem('userCredentials')
+        },
+        body: JSON.stringify(userSettings)
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          console.log("User data successfully saved.");
+        } else {
+          console.error("Failed to save user data.");
+        }
+      })
+      .catch(err => {
+        console.error('Error saving user data:', err);
+      });
+    }
+
+    /**
+     * ====== TÍNH TOÁN SCORE, TARGET, UPDATE UI ======
+     * Gọi trong mỗi thay đổi check/uncheck, weight,...
+     */
+    function updateStats(){
+      let totalScore = 0;
+      let totalTarget = 0;
+      const rows = todoContainer.querySelectorAll('.task-row');
+
+      rows.forEach(row => {
+        const checkbox = row.querySelector('.task-checkbox');
+        const weightInput = row.querySelector('.task-weight');
+        let weight = parseInt(weightInput.value) || 0;
+        totalTarget += weight;
+        if(checkbox.checked) {
+          totalScore += weight;
+        }
+      });
+
+      // Hiển thị animation + điểm (nếu score tăng)
+      if(totalScore > previousScore){
+        showScoreAnimation(totalScore - previousScore);
+      }
+      previousScore = totalScore;
+
+      scoreValue.textContent = totalScore;
+      targetValue.textContent = totalTarget;
+
+      // Progress
+      let progressPercent = 0;
+      if(totalTarget > 0) {
+        progressPercent = (totalScore / totalTarget) * 100;
+      }
+      progressBar.style.width = progressPercent.toFixed(2) + '%';
+      progressText.textContent = progressPercent.toFixed(0) + '%';
+
+      // Nếu chế độ priority => sắp xếp lại
+      if(currentMode === 'priority'){
+        sortTasksByWeight();
+      }
+
+      // Nếu hoàn thành 100% => bắn confetti + chúc mừng
+      if(progressPercent === 100 && totalScore > 0){
+        launchConfetti();
+        showCongratulation();
+      }
+    }
+
+    /** 
+     * ====== HIỆU ỨNG CHÚC MỪNG ======
+     */
+    function showCongratulation(){
+      congratulationMsg.style.display = 'block';
+      congratulationMsg.style.animation = 'none';
+      setTimeout(() => {
+        congratulationMsg.style.animation = 'showAndHide 3s ease-in-out forwards';
+      }, 10);
+    }
+    congratulationMsg.addEventListener('animationend', () => {
+      congratulationMsg.style.display='none';
+      congratulationMsg.style.animation='none';
+    });
+
+    /**
+     * ====== SẮP XẾP TASK THEO TRỌNG SỐ (Priority Mode) ======
+     */
+    function sortTasksByWeight(){
+      const rows = [...todoContainer.querySelectorAll('.task-row')];
+      rows.sort((a,b) => {
+        const wA = parseInt(a.querySelector('.task-weight').value)||0;
+        const wB = parseInt(b.querySelector('.task-weight').value)||0;
+        return wB - wA; // giảm dần
+      });
+      rows.forEach(r => todoContainer.insertBefore(r, addTaskBtn));
+    }
+
+    /**
+     * ====== TẠO MỘT TASK ROW MỚI ======
+     * Kèm event listener => auto-save
+     */
+    function createTaskRow(taskName='New Task', weight='10', checked=false){
+      const row = document.createElement('div');
+      row.className = 'task-row';
+
+      const leftDiv = document.createElement('div');
+      leftDiv.className = 'task-left';
+
+      const checkbox = document.createElement('input');
+      checkbox.type='checkbox';
+      checkbox.className='task-checkbox';
+      checkbox.checked=checked;
+
+      const taskNameInput = document.createElement('input');
+      taskNameInput.type='text';
+      taskNameInput.value=taskName;
+      taskNameInput.className='task-name';
+      taskNameInput.title=taskName;
+      if(checked) taskNameInput.classList.add('completed');
+
+      leftDiv.appendChild(checkbox);
+      leftDiv.appendChild(taskNameInput);
+
+      const weightInput = document.createElement('input');
+      weightInput.type='text';
+      weightInput.value=weight;
+      weightInput.className='task-weight';
+
+      row.appendChild(leftDiv);
+      row.appendChild(weightInput);
+
+      // Các sự kiện => updateStats => saveUserData
+      checkbox.addEventListener('change', () => {
+        taskNameInput.classList.toggle('completed', checkbox.checked);
+        updateStats();
+        saveUserData(); 
+      });
+      taskNameInput.addEventListener('input', () => {
+        taskNameInput.title = taskNameInput.value;
+        updateStats();
+        saveUserData();
+      });
+      weightInput.addEventListener('change', () => {
+        if(!weightInput.value.trim()) {
+          weightInput.value='0';
+        }
+        updateStats();
+        saveUserData();
+      });
+
+      // Điều hướng phím mũi tên
+      taskNameInput.addEventListener('keydown',(e) => {
+        if(e.key==='Enter' || e.key==='ArrowDown'){
+          e.preventDefault();
+          focusNextTask(row);
+        } else if(e.key==='ArrowUp'){
+          e.preventDefault();
+          focusPrevTask(row);
+        }
+      });
+
+      // Chuột phải -> context menu
+      row.addEventListener('contextmenu', (ev) => {
+        showContextMenu(ev, row);
+      });
+
+      return row;
+    }
+
+    function focusNextTask(currentRow){
+      const rows=[...todoContainer.querySelectorAll('.task-row')];
+      const idx=rows.indexOf(currentRow);
+      if(idx < rows.length-1){
+        const nextRow=rows[idx+1];
+        const nextName=nextRow.querySelector('.task-name');
+        nextName.focus();
+        nextName.select();
+      } else {
+        addTaskBtn.focus();
+      }
+    }
+    function focusPrevTask(currentRow){
+      const rows=[...todoContainer.querySelectorAll('.task-row')];
+      const idx=rows.indexOf(currentRow);
+      if(idx>0){
+        const prevRow=rows[idx-1];
+        const prevName=prevRow.querySelector('.task-name');
+        prevName.focus();
+        prevName.select();
+      }
+    }
+
+    /**
+     * ====== TẠO TASK BẰNG NÚT +Create task ======
+     */
+    addTaskBtn.addEventListener('click', () => {
+      const newRow = createTaskRow();
+      todoContainer.insertBefore(newRow, addTaskBtn);
+      updateStats();
+      saveUserData();
+    });
+    addTaskBtn.addEventListener('keydown', (e) => {
+      if(e.key==='ArrowUp'){
+        e.preventDefault();
+        const rows=[...todoContainer.querySelectorAll('.task-row')];
+        if(rows.length>0){
+          const lastRow=rows[rows.length-1];
+          const lastName=lastRow.querySelector('.task-name');
+          lastName.focus();
+          lastName.select();
+        }
+      }
+    });
+
+    /** 
+     * ====== ẨN/HIỆN CONTEXT MENU, XỬ LÝ SỰ KIỆN CHUỘT PHẢI ======
+     */
+    function showContextMenu(e, row){
+      e.preventDefault();
+      currentTaskRow = row;
+      contextMenu.style.display='block';
+      contextMenu.style.left=e.pageX+'px';
+      contextMenu.style.top=e.pageY+'px';
+
+      if(currentMode==='priority'){
+        contextUp.style.display='none';
+        contextDown.style.display='none';
+      } else {
+        contextUp.style.display='block';
+        contextDown.style.display='block';
+      }
+    }
+    // Click ngoài -> ẩn menu
+    document.addEventListener('click', () => {
+      contextMenu.style.display='none';
+      currentTaskRow=null;
+    });
+    contextMenu.addEventListener('click', (e) => {
+      const action = e.target.getAttribute('data-action');
+      if(!action || !currentTaskRow) return;
+      
+      if(action==='delete'){
+        currentTaskRow.remove();
+        updateStats();
+        saveUserData();
+      } else if(action==='up'){
+        if(currentMode==='free'){
+          const prev = currentTaskRow.previousElementSibling;
+          if(prev && prev.classList.contains('task-row')){
+            todoContainer.insertBefore(currentTaskRow, prev);
+            updateStats();
+            saveUserData();
+          }
+        }
+      } else if(action==='down'){
+        if(currentMode==='free'){
+          const next = currentTaskRow.nextElementSibling;
+          if(next && next.classList.contains('task-row')){
+            todoContainer.insertBefore(next, currentTaskRow);
+            updateStats();
+            saveUserData();
+          }
+        }
+      }
+      contextMenu.style.display='none';
+      currentTaskRow=null;
+    });
+
+    /**
+     * ====== SCORE HIỆU ỨNG +n ======
+     */
+    function showScoreAnimation(points){
+      const floatText = document.createElement('div');
+      floatText.className='score-float';
+      floatText.textContent=`+${points}`;
+      const scoreContainer=document.querySelector('.score-target');
+      scoreContainer.style.position='relative';
+      scoreContainer.appendChild(floatText);
+      setTimeout(() => { floatText.remove(); }, 1000);
+    }
+
+    /**
+     * ====== CONFETTI ======
+     */
+    function launchConfetti(){
+      for(let i=0; i<150; i++){
+        createConfettiParticle();
+      }
+    }
+    function createConfettiParticle(){
+      const confetti = document.createElement('div');
+      confetti.className='confetti';
+      const colors = [
+        '#f44336','#e91e63','#9c27b0','#673ab7','#3f51b5','#2196f3','#03a9f4',
+        '#00bcd4','#009688','#4caf50','#8bc34a','#cddc39','#ffeb3b','#ffc107',
+        '#ff9800','#ff5722','#795548','#9e9e9e','#607d8b'
+      ];
+      const randomColor = colors[Math.floor(Math.random()*colors.length)];
+      confetti.style.backgroundColor = randomColor;
+      const startX = Math.random()*window.innerWidth;
+      const endX = Math.random()*window.innerWidth;
+      const duration = Math.random()*2 + 3;
+      confetti.style.setProperty('--startX', startX+'px');
+      confetti.style.setProperty('--endX', endX+'px');
+      confetti.style.animationDuration = duration+'s';
+      document.body.appendChild(confetti);
+      setTimeout(() => { confetti.remove(); }, duration*1000);
+    }
+
+    /**
+     * ====== ĐỔI CHẾ ĐỘ, ĐỔI THEME TRONG PANEL SETTINGS ======
+     */
+    settingsBtn.addEventListener('click', () => {
+      // Sync UI
+      modeSwitch.checked = (currentMode==='priority');
+      themeSwitch.checked = (currentTheme==='dark');
+
+      if(settingsPanel.style.display==='block'){
+        settingsPanel.style.display='none';
+      } else {
+        settingsPanel.style.display='block';
+      }
+    });
+
+    modeSwitch.addEventListener('change', () => {
+      currentMode = modeSwitch.checked ? 'priority' : 'free';
+      if(currentMode==='priority'){
+        sortTasksByWeight();
+      }
+      updateStats();
+      saveUserData(); // auto-save
+    });
+    themeSwitch.addEventListener('change', () => {
+      currentTheme = themeSwitch.checked ? 'dark' : 'light';
+      
+      // Thay đổi theme trên body (như cũ)
+      if(currentTheme === 'dark'){
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+      }
+
+      // 1) Lưu lên server (để userData.theme được update)
+      saveUserData();
+
+      // 2) Phát sự kiện theme-changed (để <user-info> và các thành phần khác biết)
+      document.dispatchEvent(new CustomEvent('theme-changed', {
+        detail: { theme: currentTheme }
+      }));
+    });
+
+
+    /**
+     * ====== NÚT Load + Save RA FILE .TXT ======
+     * (không liên quan đến update server, chỉ để export/import txt)
+     */
+    loadButton.addEventListener('click', () => {
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        parseIncompleted(text);
+        fileInput.value='';
+      };
+      reader.readAsText(file);
+    });
+    function parseIncompleted(text){
+      const lines=text.split('\n');
+      let inIncompletedSection=false;
+      lines.forEach(line => {
+        const trimLine=line.trim();
+        if(trimLine.startsWith('Incompleted Task')){
+          inIncompletedSection=true;
+          return;
+        }
+        if(inIncompletedSection){
+          if(!trimLine || trimLine.startsWith('Completed Task') || trimLine.startsWith('Status') 
+             || trimLine.startsWith('Score') || trimLine.startsWith('Target')){
+            inIncompletedSection=false;
+            return;
+          }
+          if(trimLine.startsWith('-')){
+            const taskName=trimLine.substring(1).trim();
+            const newRow=createTaskRow(taskName,'10',false);
+            todoContainer.insertBefore(newRow, addTaskBtn);
+          }
+        }
+      });
+      updateStats();
+      saveUserData();
+    }
+
+    function prepareSaveData(){
+      const allRows=todoContainer.querySelectorAll('.task-row');
+      let completedTasks=[];
+      let incompletedTasks=[];
+      let score=0;
+      let target=0;
+
+      allRows.forEach(row => {
+        const checkbox=row.querySelector('.task-checkbox');
+        const name=row.querySelector('.task-name').value;
+        const weight=parseInt(row.querySelector('.task-weight').value)||0;
+        target += weight;
+        if(checkbox.checked){
+          score += weight;
+          completedTasks.push(name);
+        } else {
+          incompletedTasks.push(name);
+        }
+      });
+
+      let status=(score===target && target>0)?'Complete':'Incomplete';
+      let progressPercent=(target>0)?((score/target)*100).toFixed(0):0;
+
+      let data='';
+      data+='Status : '+status+'\n';
+      data+='Progress : '+progressPercent+'%\n';
+      data+='Score : '+score+'\n';
+      data+='Target : '+target+'\n';
+      data+='\nCompleted Task : \n';
+      completedTasks.forEach(t => { data+=' - '+t+'\n'; });
+      data+='\nIncompleted Task : \n';
+      incompletedTasks.forEach(t => { data+=' - '+t+'\n'; });
+      return data;
+    }
+    function saveFile(content){
+      const now=new Date();
+      const dd=String(now.getDate()).padStart(2,'0');
+      const mm=String(now.getMonth()+1).padStart(2,'0');
+      const yyyy=now.getFullYear();
+      const fileName=`iscinet ${dd}-${mm}-${yyyy}.txt`;
+      const blob=new Blob([content], { type:'text/plain' });
+      const link=document.createElement('a');
+      link.download=fileName;
+      link.href=URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+    saveButton.addEventListener('click', () => {
+      const content=prepareSaveData();
+      saveFile(content);
+    });
+
+    /**
+     * ====== HÀM KHỞI TẠO CHO CÁC TASK CÓ SẴN TRONG HTML BAN ĐẦU ======
+     * (Nếu user-data trả về 0 tasks, hoặc user chưa login)
+     */
+    function initExistingTasks(){
+      const allRows = todoContainer.querySelectorAll('.task-row');
+      allRows.forEach(row => {
+        const checkbox = row.querySelector('.task-checkbox');
+        const nameInput = row.querySelector('.task-name');
+        const weightInput = row.querySelector('.task-weight');
+
+        // Sự kiện -> updateStats -> saveUserData
+        checkbox.addEventListener('change', () => {
+          nameInput.classList.toggle('completed', checkbox.checked);
+          updateStats();
+          saveUserData();
+        });
+        nameInput.addEventListener('input', () => {
+          nameInput.title = nameInput.value;
+          updateStats();
+          saveUserData();
+        });
+        nameInput.addEventListener('keydown', (e) => {
+          if(e.key==='Enter' || e.key==='ArrowDown'){
+            e.preventDefault();
+            focusNextTask(row);
+          } else if(e.key==='ArrowUp'){
+            e.preventDefault();
+            focusPrevTask(row);
+          }
+        });
+        weightInput.addEventListener('change', () => {
+          if(!weightInput.value.trim()) {
+            weightInput.value='0';
+          }
+          updateStats();
+          saveUserData();
+        });
+        row.addEventListener('contextmenu', (ev) => {
+          showContextMenu(ev, row);
+        });
+      });
+    }
+
+    /**
+     * ====== KIỂM TRA LOGIN, LOAD DỮ LIỆU TỪ SERVER => TẠO TASK THEO USER ======
+     */
+    function loadUserData() {
+      fetch('/user-data', {
+        headers: {
+          'user-credentials': localStorage.getItem('userCredentials')
+        }
+      })
+      .then(response => {
+        if(response.status===401){
+          // Sai login => quay về login
+          localStorage.removeItem('userCredentials');
+          window.location.href='/login.html';
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Xóa task mẫu
+        document.querySelectorAll('.task-row').forEach(task => task.remove());
+
+        // Tạo task từ user-data
+        if(data.tasks && data.tasks.length > 0){
+          data.tasks.forEach(task => {
+            const newRow = createTaskRow(task.name, task.weight, task.checked);
+            todoContainer.insertBefore(newRow, addTaskBtn);
+          });
+        }
+
+        // Nếu user chưa có tasks -> (tùy ý) auto-add 3 tasks mẫu
+        if(!data.tasks || data.tasks.length===0){
+          // Thêm tasks mẫu, hoặc để trống
+          // Ở đây có thể uncomment nếu muốn:
+          // const t1 = createTaskRow('Task 1','10',false);
+          // todoContainer.insertBefore(t1, addTaskBtn);
+          // ...
+        }
+
+        // Theme, mode
+        document.body.classList.toggle('dark-theme', data.theme==='dark');
+        themeSwitch.checked = (data.theme==='dark');
+        modeSwitch.checked = (data.mode==='priority');
+        currentMode = data.mode || 'free';
+        currentTheme = data.theme || 'light';
+
+        // Score + target
+        scoreValue.innerText = data.score || 0;
+        targetValue.innerText = data.target || 100;
+
+        // Cập nhật hiển thị
+        updateStats();
+      })
+      .catch(err => {
+        console.error('Error loading user data:', err);
+        window.location.href = '/login.html';
+      });
+    }
+
+    // ====== SỰ KIỆN DOMContentLoaded ======
+    document.addEventListener('DOMContentLoaded', function (){
+      const credentials = localStorage.getItem('userCredentials');
+      if(!credentials){
+        window.location.href = '/login.html';
+      } else {
+        // Đầu tiên init event cho mấy task HTML cứng
+        initExistingTasks();
+        // Rồi load data server => replace tasks
+        loadUserData();
+        // updateStats(); // Sẽ được gọi sau load data xong
+      }
+    });
+
+    /**
+     * ====== CẢNH BÁO KHI RỜI TRANG (NẾU MUỐN) ======
+     * => KHÔNG xóa localStorage, KHÔNG fetch => cho fetch auto-save
+     */
+    window.addEventListener('beforeunload', (e) => {
+      e.preventDefault();
+      e.returnValue = "Are you sure you want to leave iScinet?";
+      // CHỈ hiển thị cảnh báo, KHÔNG xóa credential, KHÔNG fetch
+    });
+  </script>
+
+
+  <script type="module" src="info.js"></script>
+  <user-info></user-info>
+
+  <script>
+    /*Reset Button*/
+    const resetButton = document.getElementById('resetButton');
+
+    resetButton.addEventListener('click', () => {
+      if (confirm("Are you sure you want to reset all tasks? This action cannot be undone.")) {
+        // Xóa tất cả các tasks
+        document.querySelectorAll('.task-row').forEach(task => task.remove());
+        scoreValue.textContent = '0';
+        targetValue.textContent = '0';
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+
+        // Cập nhật lên server
+        fetch('/update-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'user-credentials': localStorage.getItem('userCredentials')
+          },
+          body: JSON.stringify({
+            tasks: [], 
+            score: 0, 
+            target: 0
+          })
+        }).then(response => response.json())
+          .then(result => {
+            if (result.success) {
+              alert('All tasks have been reset successfully.');
+            } else {
+              alert('Failed to reset tasks.');
+            }
+          })
+          .catch(err => {
+            console.error('Error resetting tasks:', err);
+          });
+      }
+    });
+
+
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+[
+  {
+    "username": "paingoat",
+    "tasks": [
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "Task 3",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      }
+    ],
+    "score": 10,
+    "target": 70,
+    "passwordHash": "$2b$10$TDIjTKg/R87UBFXpBBe65OMr2gjYZWiZxD0zfoqP.0ux/WaSy2IaK",
+    "theme": "dark",
+    "mode": "priority"
+  },
+  {
+    "username": "123",
+    "tasks": [],
+    "score": 0,
+    "target": 100,
+    "passwordHash": "$2b$10$f7VSrio9T/Wv9zvd3gsh6eIY/ivQATW7KuO1tBDTTTHHxkatNbIey",
+    "theme": "light",
+    "mode": "free"
+  },
+  {
+    "username": "hele",
+    "tasks": [],
+    "score": 0,
+    "target": 100,
+    "passwordHash": "$2b$10$mCxkFKSx480Eh2fep7VEVumSuFjx05/udu/RBCeKiy2l5Z8xB6oxO",
+    "theme": "light",
+    "mode": "free"
+  },
+  {
+    "username": "funalee",
+    "passwordHash": "$2b$10$w9E0MHv9Vm6/kJOZ1K3KGOhSVDfMzKPkXIK3vKtnpabbIOtwKxMMS",
+    "tasks": [
+      {
+        "name": "Sample Task 1",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "English ",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "Đá Neko",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": true,
+        "weight": "100"
+      },
+      {
+        "name": "New Task",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": true,
+        "weight": "100"
+      },
+      {
+        "name": "New Task",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "Sample Task 3",
+        "checked": false,
+        "weight": "30"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      }
+    ],
+    "score": 260,
+    "target": 340,
+    "theme": "light",
+    "mode": "free"
+  },
+  {
+    "username": "baotram",
+    "passwordHash": "$2b$10$nudOCC44AENnElHm0wtwruWiQqP1SB6i/OMa6lIP9eHHkErN6NLdK",
+    "tasks": [
+      {
+        "name": "Sample Task 1",
+        "checked": true,
+        "weight": "10"
+      },
+      {
+        "name": "Sample Task 2",
+        "checked": true,
+        "weight": "20"
+      },
+      {
+        "name": "Sample Task 3",
+        "checked": true,
+        "weight": "30"
+      }
+    ],
+    "score": 60,
+    "target": 60,
+    "theme": "light",
+    "mode": "free"
+  },
+  {
+    "username": "New Task",
+    "passwordHash": "$2b$10$ZVGDPOWZogAZ5ec64iaJAOh5klZTDUpr/QtcGtEEtg0rFdv6IQ9j6",
+    "tasks": [
+      {
+        "name": "Sample Task 1",
+        "checked": false,
+        "weight": 10
+      },
+      {
+        "name": "Sample Task 2",
+        "checked": false,
+        "weight": 20
+      },
+      {
+        "name": "Sample Task 3",
+        "checked": false,
+        "weight": 30
+      }
+    ],
+    "score": 0,
+    "target": 100,
+    "theme": "light",
+    "mode": "free"
+  },
+  {
+    "username": "maho",
+    "passwordHash": "$2b$10$yAZ.k1w94ZdZdQxMnAonAONGLqVPOaYMgLz4Xjug1zWoiHqSvS01S",
+    "tasks": [
+      {
+        "name": "Sample Task 3",
+        "checked": false,
+        "weight": "30"
+      },
+      {
+        "name": "Sample Task 2",
+        "checked": false,
+        "weight": "20"
+      },
+      {
+        "name": "Sample Task 1",
+        "checked": true,
+        "weight": "10"
+      }
+    ],
+    "score": 10,
+    "target": 60,
+    "theme": "light",
+    "mode": "free"
+  },
+  {
+    "username": "999",
+    "passwordHash": "$2b$10$hrBMMqu83X1qToyfC//SwuQ.DhFS9FlVsXdlX.hMDlrMJ7GkssokS",
+    "tasks": [
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      },
+      {
+        "name": "New Task",
+        "checked": false,
+        "weight": "10"
+      }
+    ],
+    "score": 0,
+    "target": 80,
+    "theme": "light",
+    "mode": "free"
+  }
+]

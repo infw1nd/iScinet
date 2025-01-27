@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <title>Login - iScinet</title>
+  <link rel="icon" type="image/png" href="iscinet_favicon.png" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Nunito, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+      position: relative; /* Để có thể đặt nút ? ở góc phải dưới */
+    }
+    .login-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+    .login-container h2 {
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #0c8599;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error-message {
+      color: red;
+      display: none;
+      margin-top: 10px;
+    }
+
+    /* Nút ? ở góc phải dưới */
+    .help-btn {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    .help-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Hộp thoại cho nội dung iScinet */
+    .dialog-overlay {
+      display: none;
+      position: fixed;
+      top: 0; 
+      left: 0; 
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dialog-box {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 450px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      font-family: Nunito, sans-serif;
+      line-height: 1.3; /* Giảm khoảng cách dòng */
+      word-spacing: normal; /* Tránh khoảng cách từ bị kéo dãn */
+      letter-spacing: 0px; /* Giữ khoảng cách giữa các chữ cái mặc định */
+      text-align: left; /* Căn lề trái thay vì justify để tránh khoảng cách thừa */
+    }
+
+    /* Tiêu đề */
+    .dialog-box h3 {
+      font-size: 22px;
+      font-weight: bold;
+      color: #0c8599;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* Đoạn văn */
+    .dialog-box p {
+      font-size: 16px;
+      color: #333;  
+      margin-bottom: 10px;
+      text-align: left; /* Thay vì justify để tránh giãn cách */
+      word-spacing: 0px; /* Đảm bảo khoảng cách từ bình thường */
+      letter-spacing: normal; /* Giữ khoảng cách ký tự bình thường */
+    }
+
+
+    /* Cảnh báo màu đỏ */
+    .dialog-warning {
+      color: #d9534f;
+      font-weight: bold;
+      background-color: #fbeaea;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #d9534f;
+      margin-bottom: 15px;
+      line-height: 1.4;
+      word-spacing: normal;
+    }
+
+    /* Nút đóng hộp thoại */
+    .dialog-close-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 160px;
+      text-align: center;
+    }
+
+    .dialog-close-btn:hover {
+      background-color: #0056b3;
+    }
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>iScinet</h2>
+    <input 
+      type="text" 
+      id="username" 
+      placeholder="Enter your username" 
+      required 
+    />
+    <input 
+      type="password" 
+      id="password" 
+      placeholder="Enter your password" 
+      required
+      onkeydown="if(event.key === 'Enter') handleLogin()"
+    />
+<!-- Bắt sự kiện Enter -->
+    <button onclick="handleLogin()">Login</button>
+    <p class="error-message" id="error-msg">Incorrect username or password</p>
+  </div>
+
+  <!-- Nút ? ở góc phải dưới -->
+  <button class="help-btn" onclick="openHelpDialog()">?</button>
+
+  <!-- Hộp thoại hiển thị thông tin iScinet -->
+<div class="dialog-overlay" id="helpDialog">
+  <div class="dialog-box">
+    <h3 style="text-align: center; color: #0c8599; margin-bottom: 15px;">
+      Welcome to iScinet
+    </h3>
+    <p style="text-align: left; margin-bottom: 10px;">
+      iScinet is an open platform designed for gamified task management, 
+      empowering independent researchers to organize their work efficiently.
+    </p>
+    <p style="text-align: left; margin-bottom: 10px;">
+      No account registration is required. Simply enter a username and password.
+      If your username does not exist, the system will automatically create a new account for you.
+    </p>
+    <p style="color: red; font-weight: bold; text-align: left;">
+      Please note: iScinet does not offer a password recovery feature. 
+      We strongly recommend enabling your browser’s auto-save password 
+      function to ensure seamless access in the future.
+    </p>
+    <button class="dialog-close-btn" onclick="closeHelpDialog()">Close</button>
+  </div>
+</div>
+
+
+  <script>
+    function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('error-msg');
+
+      if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+      }
+
+      const credentials = btoa(`${username}:${password}`);
+      localStorage.setItem('userCredentials', credentials);
+
+      fetch('/user-data', {
+        headers: { 'user-credentials': credentials }
+      })
+      .then(response => {
+        if (response.status === 401) {
+          errorMsg.style.display = 'block';
+          localStorage.removeItem('userCredentials');
+        } else {
+          window.location.href = '/index.html';
+        }
+      })
+      .catch(err => {
+        console.error('Server connection error:', err);
+        alert('Connection error, please try again later.');
+      });
+    }
+
+    function openHelpDialog() {
+      document.getElementById('helpDialog').style.display = 'flex';
+    }
+
+    function closeHelpDialog() {
+      document.getElementById('helpDialog').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
